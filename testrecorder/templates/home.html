@@ -9,7 +9,6 @@
 <title>Live UX Storyboard</title>
 {% endblock title %}
 
-
 {% block body %}
 
 <!-- Main container -->
@@ -45,32 +44,22 @@
             <label for="public-videos"><i class="fas fa-globe"></i><p>Public</p></label>
         </div>
 
-      <!--  // Embded Code demo -->
-<br>
-        <div class="setting-icon">
-            <input type="checkbox" name="screen" id="screen-share" >
-            <i class="bi bi-pc-display-horizontal"></i>
-            <label for="screen-share"><i class="fas fa-computer"></i><p>Screen Share</p></label>
-        </div>
-      
+      <!--  // Embded Code demo -->        
+        <div class="record-btn tooltip-container">
+                <button data-toggle="modal" data-target="#options-select-modal">
+                    <i class="fas fa-record-vinyl"></i>
+                </button>
+                <span class="tooltip-text">Screen Share</span>
+            </div>
         <div >
             <button id="record" disabled> Record</buton>
             <button id="stop" disabled> Stop</buton>    
-        </div>
-        <a id="downloadlink" download="mediarecorder.webm" name="mediarecorder.webm" href >download video</a>
+        </div><br>
+            <a id="downloadlink" download="mediarecorder.webm" name="mediarecorder.webm" href >download video</a>
         <div id="error"></div>
-        </div>
 
+    </div>
 
-        <!--Custom Code  
-
-        <video id="videocustom" autoplay muted></video>
-        <div>
-            <button onClick="recordStream()">Record camera</button>
-            <button onClick="recordScreenAndAudio()">Record Screen and audio</button>
-            <button onClick="stopRecording()">Stop!</button>
-        </div>
-    -->
 
                 <div class="input-start-record-btn">
         <!-- main content inputs -->
@@ -235,6 +224,61 @@
 
         <div class="col-sm-12" id="app-status">STATUS: Waiting to Record.</div>
     </div> {% endcomment %}
+
+     <!-- options-select-modal -->
+
+    <div class="modal" tabindex="-1" role="dialog" id="options-select-modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form> 
+                    <div class="mb-3">
+                        <label class="form-label required">User</label>
+                        <input type="text" class="form-control" id="username">
+                        <p style="color:red;" id="username-error"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">Test Name</label>
+                        <input type="email" class="form-control" id="test-name">
+                        <p style="color:red;" id="test-name-error"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">Test Description</label>
+                        <textarea class="form-control" id="test-description"></textarea>
+                    </div>
+
+                    <fieldset>
+                        <legend>Web Cam</legend>
+                        <input type="radio" id="webcam_yes" name="webcam" value="webcam_yes"><label for="webcam_yes">Yes</label>
+                        <input type="radio" id="webcam_no" name="webcam" value="webcam_no"><label for="webcam_no">No</label>
+                    </fieldset>
+    
+    <br>
+                    <fieldset>
+                        <legend>MicroPhone</legend>
+                        <input type="radio" id="mic_yes" name="mic" value="mic_yes"><label for="mic_yes">Yes</label>
+                        <input type="radio" id="mic_no" name="mic" value = "mic_no"><label for="mic_no">No</label>
+                    </fieldset>
+                      <fieldset>
+                        <legend>Privacy</legend>
+                        <input type="radio" id="privacy_pubic" name="privacy" value="private"><label for="privacy_public">Public</label>
+                        <input type="radio" id="privacy_private" name="privacy" value="private"><label for="privacy_private">Private</label>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">Submit</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <!-- Test Details Modal -->
     <div class="modal" id="test-details-modal" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -1048,9 +1092,13 @@
                     </button>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+
+
+
 
 
 
@@ -1064,9 +1112,17 @@
 
 <!-- Application JavaScript -->
 </script>
-<script src="{% static '/js/index.js' %}"></script>
+
+<!-- by Muhammad Ahmed  -->
 
 <!-- Local Video Download JS  -->
-<script src="{% static '/js/index2.js' %}"></script>
+
+<!-- Local Video Download JS  -->
+
+<!-- All Models JS  -->
+
+<!-- Local Video Download JS  -->
+
+
 
 {% endblock body %}
