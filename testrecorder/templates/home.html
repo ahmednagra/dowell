@@ -9,15 +9,44 @@
 <title>Live UX Storyboard</title>
 {% endblock title %}
 
+
 {% block body %}
 
+    <!-- lower nav -->
+    <div class="lower-nav">
+        <!-- single select -->
+        <div class="">
+            <!--<select name="channel" id="selectChannel" onChange="getSelectedChannelName(this)">
+                <option value="">Select Channel</option>
+              </select>-->
+            <select name="channel" id="selectChannel">
+                <option value="">Select Channel</option>
+              </select>
+            <div style="color:red;" id="channelname-error"></div>
+        </div>
+        <!-- end single select -->
+        <!-- single select -->
+          <!--<select name="playlist" class="selectPlaylist" onChange="getSelectedPlaylistName(this)">
+            <option value="">Select Playlist</option>
+          </select>-->
+        <!-- end single select -->
+        <!-- Story Name -->
+        <div class="story-name">
+          <input type="text" name="" id="test-name" placeholder="Video Title">
+          <div style="color:red;" id="test-name-error"></div>
+        </div> 
+        <!-- Story Name -->
+        <!-- user Name -->
+        <div class="story-name">
+          <input type="text" name="" id="username" placeholder="User">
+          <div style="color:red;" id="username-error"></div>
+        </div> 
+        <!-- user Name -->
+      </div>
+      <!-- end lower nav -->
 <!-- Main container -->
 <div class="contain">
 
-    <!-- status in lower nav -->
-<div class="lower-nav">
-    <div id="app-status">STATUS: Waiting to Record.</div>
-</div>
 <main class="main-contents">
     <!--display video title-->
     <div class="video-title" style="text-align: center; text-transform: capitalize;"></div>
@@ -26,7 +55,7 @@
         <video id="video" autoplay muted></video>
         </div>
         <!-- Settings and controls -->
-                <div class="main-content-check-boxes">
+    <div class="main-content-check-boxes">
         <div class="setting-icon">
             <input type="checkbox" name="webcam" id="webcam-recording">
             <label for="webcam-recording"><i class="fas fa-camera"></i><p>Webcam</p></label>
@@ -36,7 +65,7 @@
             <label for="screen-recording"><i class="fas fa-desktop"></i><p>Screen</p></label>
         </div>
         <div class="setting-icon">
-            <input type="checkbox" name="audio" id="audio-settings" checked>
+            <input type="checkbox" name="audio" id="audio-settings" onclick="mic_setting()" checked>
             <label for="audio-settings"><i class="fas fa-microphone-lines"></i><p>Audio</p></label>
         </div>
         <div class="setting-icon">
@@ -44,13 +73,12 @@
             <label for="public-videos"><i class="fas fa-globe"></i><p>Public</p></label>
         </div>
 
-      <!--  // Embded Code demo -->        
-        <div class="record-btn tooltip-container">
-                <button data-toggle="modal" data-target="#options-select-modal">
-                    <i class="fas fa-record-vinyl"></i>
-                </button>
-                <span class="tooltip-text">Screen Share</span>
-            </div>
+        <!--  // Embded Code demo -->        
+        <div class="setting-icon">
+            <input type="checkbox" name="screenshare" id="screen-share">
+            <label for="screen-share"><i class="fas fa-globe"></i><p>screen-share</p></label>
+        </div>
+        
         <div >
             <button id="record" disabled> Record</buton>
             <button id="stop" disabled> Stop</buton>    
@@ -58,9 +86,8 @@
             <a id="downloadlink" download="mediarecorder.webm" name="mediarecorder.webm" href >download video</a>
         <div id="error"></div>
 
-    </div>
 
-
+        </div>
                 <div class="input-start-record-btn">
         <!-- main content inputs -->
         <div class="main-content-input">
@@ -82,9 +109,12 @@
 
             </div>
             <div class="record-btn tooltip-container">
-                <button id="start" onClick="showTestDetailsModal()">
+                <button id="start" onClick="validateModal()">
                     <i class="fas fa-record-vinyl"></i>
                 </button>
+                <!--<button id="start" onClick="showTestDetailsModal()">
+                    <i class="fas fa-record-vinyl"></i>
+                </button>-->
                 <span class="tooltip-text">Start Recording</span>
             </div>
             <div class="stop-btn tooltip-container" style="display:none">
@@ -108,180 +138,14 @@
         </div>
         </div>
     </main>
+    <!-- status in lower nav -->
+    <div class="status-container">
+        <div id="app-status">STATUS: Waiting to Record.</div>
+    </div>
 
-    <!-- Settings and controls -->
-    {% comment %} <div class="row my-custom-row justify-content-center mt-3" style="--bs-bg-opacity: .5;">
-
-        <!-- Settings -->
-        <div class="col-sm-4">
-            <div class="col-sm-6">
-                <div style="--bs-bg-opacity: .5;" class="white-text">
-                    <h6>Settings</h6>
-                    <div>
-                        <input type="checkbox" id="webcam-recording" name="webcam">
-                        <label for="webcam">Webcam Recording</label>
-                    </div>
-
-                    <div>
-                        <input type="checkbox" id="screen-recording" name="screen" checked>
-                        <label for="screen">Screen Recording</label>
-                    </div>
-
-                    <div>
-                        <input type="checkbox" id="audio-settings" name="audio" checked>
-                        <label for="keys">Audio</label>
-                    </div>
-
-                    <!-- <div>
-                        <input type="checkbox" id="key-logging" name="keys">
-                        <label for="keys">Key Logging</label>
-                    </div> -->
-
-                    <div>
-                        <input type="checkbox" id="public-videos" name="public">
-                        <label for="public">Make Stream Public</label>
-                    </div>
-
-                    <!-- <div>
-                        <input type="checkbox" id="clickupTaskNotesCheckbox" name="gettaskid"
-                            onchange="handleTaskIdCheckbox(event)">
-                        <label for="gettaskid">Clickup Task Notes</label>
-                    </div> -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Controls -->
-        <div class="col-sm-8">
-            <div class="row">
-                <div class="row ">
-                    <div class="col-sm-12 ">
-                        <div class="row">
-                            <div class="col-sm-4 mt-3">
-                                <!--<button type="button" class="btn btn-danger btn-sm w-100" id="start"
-                                    data-bs-toggle="modal" data-bs-target="#test-details-modal">Start
-                                    Recording</button> -->
-
-                                <button type="button" class="btn btn-danger btn-sm w-100" id="start"
-                                    onClick="showTestDetailsModal()">Start Recording
-                                </button>
-                            </div>
-
-                            <div class="col-sm-4 mt-3">
-                                <button type="button" class="btn btn-success btn-sm w-100" id="stop"
-                                    onClick="showGetTaskIdFromUserModal()">Save/Stop
-                                    Recording</button>
-                            </div>
-
-                            <div class="col-sm-4 mt-3">
-                                <button type="button" class="btn btn-info btn-sm w-100" id="view_records"
-                                    onclick="goToPage(event)" disabled>
-                                    View YouTube Recording
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <!--<div class="col-sm-4 mt-3">
-                                <button type="button" class="btn btn-secondary btn-sm w-100" id="pause"
-                                    onClick="showSelectYoutubePlaylistModal()">Tests Button</button>
-                            </div>-->
-                            <!-- <<div class="col-sm-4 mt-3">
-                                <form action="{% url 'view_records' %}" method="POST" target="_blank">
-                                    {% csrf_token %}
-                                    <input id="webcam_link" name="webcam_link" value="" type="hidden">
-                                    <input id="screen_link" name="screen_link" value="" type="hidden">
-                                    <input id="merged_link" name="merged_link" value="" type="hidden">
-                                    <input id="beanote_file_link" name="beanote_file_link" value="" type="hidden">
-                                    <input id="key_log_file_link" name="key_log_file_link" value="" type="hidden">
-                                    <button type="submit" class="btn btn-dark btn-sm w-100" id="view_vps_files">View VPS
-                                        Files</button> 
-                                </form> 
-                            </div> -->
-
-                            <!-- <div class="col-sm-4 mt-3">
-                                <button type="button" class="btn btn-secondary btn-sm w-100" id="btnUserSettings"
-                                    data-bs-toggle="modal" data-bs-target="#user-settings-modal">
-                                    User Settings
-                                </button>
-                            </div> -->
-
-                            <div class="col-sm-4 mt-3">
-                                <button type="button" class="btn btn-primary btn-sm w-100" id="create-playlist"
-                                    onClick="showCreatingNewPlaylistModal()">Create Playlist</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> {% endcomment %}
-
-    <!-- Status bar -->
-    {% comment %} <div class="row border bg-light mt-3">
-        <!--<div class="col-sm-6" id="app-status">Status:</div>
-            <div class="col-sm-6">Time:</div>-->
-
-        <div class="col-sm-12" id="app-status">STATUS: Waiting to Record.</div>
-    </div> {% endcomment %}
-
-     <!-- options-select-modal -->
-
-    <div class="modal" tabindex="-1" role="dialog" id="options-select-modal">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Modal title</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-                <form> 
-                    <div class="mb-3">
-                        <label class="form-label required">User</label>
-                        <input type="text" class="form-control" id="username">
-                        <p style="color:red;" id="username-error"></p>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required">Test Name</label>
-                        <input type="email" class="form-control" id="test-name">
-                        <p style="color:red;" id="test-name-error"></p>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required">Test Description</label>
-                        <textarea class="form-control" id="test-description"></textarea>
-                    </div>
-
-                    <fieldset>
-                        <legend>Web Cam</legend>
-                        <input type="radio" id="webcam_yes" name="webcam" value="webcam_yes"><label for="webcam_yes">Yes</label>
-                        <input type="radio" id="webcam_no" name="webcam" value="webcam_no"><label for="webcam_no">No</label>
-                    </fieldset>
-    
-    <br>
-                    <fieldset>
-                        <legend>MicroPhone</legend>
-                        <input type="radio" id="mic_yes" name="mic" value="mic_yes"><label for="mic_yes">Yes</label>
-                        <input type="radio" id="mic_no" name="mic" value = "mic_no"><label for="mic_no">No</label>
-                    </fieldset>
-                      <fieldset>
-                        <legend>Privacy</legend>
-                        <input type="radio" id="privacy_pubic" name="privacy" value="private"><label for="privacy_public">Public</label>
-                        <input type="radio" id="privacy_private" name="privacy" value="private"><label for="privacy_private">Private</label>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Submit</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
     <!-- Test Details Modal -->
-    <div class="modal" id="test-details-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <!--<div class="modal" id="test-details-modal" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -313,7 +177,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 
     <!-- Share youtube link Modal -->
     <div class="modal" id="share-link-modal" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -732,7 +596,6 @@
                         Use Default Playlist
                     </button>
                     <button type="button" class="btn btn-success" onClick="playlistSelected()">Okay</button>
-                    <!--<button type="button" class="btn btn-primary" onClick="fetchPlaylists()">Refresh List</button>-->
 
                 </div>
             </div>
@@ -753,7 +616,7 @@
                     <ol>
                         <li>
                             <p>
-                                Make sure the chanel is valid.
+                                Make sure the channel is valid.
                             </p>
                         </li>
                         <li>
@@ -770,10 +633,14 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onClick="fetchPlaylists()">Retry</button>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="showSelectYoutubeChannelModal();"
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onClick="closeYoutubePlaylistSelectionModal()"
                         id="cancel-playlists-fetching">
                         Back
                     </button>
+                    <!--<button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="showSelectYoutubeChannelModal();"
+                        id="cancel-playlists-fetching">
+                        Back
+                    </button>-->
                 </div>
             </div>
         </div>
@@ -1026,7 +893,7 @@
 <!-- ====================================================================== -->
 <!-- Select Channel Modal -->
 <!-- YouTube channels Selection Modal -->
-<div class="modal" id="channels-selection-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+{% comment %} <div class="modal" id="channels-selection-modal" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -1092,13 +959,9 @@
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
-</div>
-
-
-
+</div> {% endcomment %}
 
 
 
@@ -1108,21 +971,14 @@
     crossorigin="anonymous"></script>
 
 <!-- Video Stream Merger JavaScript -->
-<script src="{% static '/js/dist/video-stream-merger.js' %}"></script>
+<script src="{% static '/js/dist/video-stream-merger.js' %}"> </script>
 
 <!-- Application JavaScript -->
-</script>
+<script src="{% static '/js/index.js' %}"></script>
 
-<!-- by Muhammad Ahmed  -->
+<!--Muhammad Ahmed -->
 
-<!-- Local Video Download JS  -->
-
-<!-- Local Video Download JS  -->
-
-<!-- All Models JS  -->
-
-<!-- Local Video Download JS  -->
-
+<script src="{% static '/js/index2.js' %}"></script>
 
 
 {% endblock body %}

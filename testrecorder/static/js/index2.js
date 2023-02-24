@@ -4,32 +4,72 @@ var recbtn= document.querySelector("#record");
 var stopbtn= document.querySelector("#stop");
 const videoElement = document.getElementById('video');
 var downloadlink = document.querySelector("#downloadlink");
-
-
+//var mic = document.querySelector('#audio-settings');
+// for mic constrainits
+/* let screenAudioConstraints = {
+  audio: true
+}; */ 
+//let screenStream = null;
 // Custom function
 
 sharebtn.onclick= shareScreen;
 recbtn.onclick= onBtnrecordClick;
 stopbtn.onclick= onBtnStopClick;
+//let audioStream = null;
+
 // Custom Variables 
 var mediaRecorder;
 var localStream = null;
 document.getElementById("error").innerHTML="ffff";
 
 //define all functions 
+ var micbtn = null;
+async function mic_setting(){
+   micbtn= document.getElementById("audio-settings");
+  if (micbtn.checked == true) {
+    return micbtn = true;
+  } else {
+   return micbtn = false;
+  }
+  console.log("micbtn value" , micbtn);
+}
+
+// Gets computer/capture screen stream recording stream
+async function computerscreen(mediaConstraints = {
+  video: {
+    cursor: 'always',
+    resizeMode: 'crop-and-scale'
+  },
+  //audio: true
+}) {
+  try { // phly screen stream ko global null kiya
+    const screenStream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints)
+    return screenStream
+  }
+  catch (err) {
+    let msg = "STATUS: Error while getting screen stream."
+    document.getElementById("error").innerHTML = msg;
+  }
+}
+
+
 // Share Screen Function 
- function shareScreen() {
+ async function shareScreen() {
     console.log("shareS creen");
     document.getElementById("error").innerHTML="";
-    var screenConstraints = {
+   /* var screenConstraints = {
         video:true,
-        audio:true,
+        //audio:true,
     }  // knsa media diplay krna hia 
-    navigator.mediaDevices.getDisplayMedia(screenConstraints).then(function(screenStream){
+    var micstream= navigator.mediaDevices.getDisplayMedia(screenConstraints).then(function(screenStream){
         // mic ko enablekiya hai
         var micConstraints = {
-            audio:true,
-        }
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            sampleRate: 44100
+          },
+        };
         // mic ko share kiya .then k baad promises use kiya hai
         navigator.mediaDevices.getUserMedia(micConstraints).then(function(micStream){
             // ab is k sath vido screen share ko attach kiya hai 
@@ -40,29 +80,40 @@ document.getElementById("error").innerHTML="ffff";
             })
 
             //Create New Audio
-            var context= new AudioContext();
-            var audioDestinationNode= context.createMediaStreamDestination();
+            recordAudio = mic.unchecked;
+            //stream = null;
+            if (recordAudio == true) {
+                var context= new AudioContext();
+                var audioDestinationNode= context.createMediaStreamDestination();
 
-            // at lenght 0 mean no voice
-            if (screenStream && screenStream.getAudioTracks().length>0){
-                    const systemSource = context.createMediaStreamSource(screenStream);
-                    const systemGain = context.createGain(); // sytem audio ko intract krta hai createGain
-                        systemGain.gain.value = 1;
-                        //audio ko connect kiya video k sath aur jo audio thi usko mice se jo voice aa rahi hai us se 
-                        systemSource.connect(systemGain).connect(audioDestinationNode)
-            }
-            if(micStream && micStream.getAudioTracks().length > 0 ){
-                const micSource = context.createMediaStreamSource(micStream);
-                const micGain= context.createGain();
-                micGain.gain.value = 1;
-                micSource.connect(micGain).connect(audioDestinationNode);
-            }
+              // at lenght 0 mean no voice
+              if (screenStream && screenStream.getAudioTracks().length>0){
+                      const systemSource = context.createMediaStreamSource(screenStream);
+                      const systemGain = context.createGain(); // sytem audio ko intract krta hai createGain
+                          systemGain.gain.value = 1;
+                          //audio ko connect kiya video k sath aur jo audio thi usko mice se jo voice aa rahi hai us se 
+                          systemSource.connect(systemGain).connect(audioDestinationNode)
+              }
+              if(micStream && micStream.getAudioTracks().length > 0 ){
+                  const micSource = context.createMediaStreamSource(micStream);
+                  const micGain= context.createGain();
+                  micGain.gain.value = 1;
+                  micSource.connect(micGain).connect(audioDestinationNode);
+              }
 
-            audioDestinationNode.stream.getAudioTracks().forEach(function(audioTrack){
-                composedSrtream.addTrack(audioTrack);
-            })
+              audioDestinationNode.stream.getAudioTracks().forEach(function(audioTrack){
+                  composedSrtream.addTrack(audioTrack);
+                   
+              })
 
-            onCombineAvailable(composedSrtream);
+              onCombineAvailable(composedSrtream);
+              console.log("onCombineAvailable 79 voice" , onCombineAvailable) 
+            } else{
+              composedSrtream
+                    onCombineAvailable(composedSrtream);   
+                    console.log("onCombineAvailable 82 no voice" , onCombineAvailable)   
+            }  
+           
 
             // error mic ka 
         }).catch(function(error){
@@ -75,13 +126,59 @@ document.getElementById("error").innerHTML="ffff";
         console.log(error);
     document.getElementById("error").innerHTML="Must Share Screen";
     })
+ */ 
+    voice = await mic_setting();
+    screenStream = await computerscreen();
+    // Check if we need to add audio stream
+    let recordAudio = voice;
+    let stream = null;
+    if (recordAudio == true) {
+      audioStream = await captureMediaDevices(screenAudioConstraints);
+      //stream = new MediaStream([...screenStream.getTracks(), ...audioStream.getTracks()]);
+      try {
+        const mergeAudioStreams = (desktopStream, voiceStream) => {
+          const context = new AudioContext();
+          // Create a couple of sources
+          const source1 = context.createMediaStreamSource(desktopStream);
+          const source2 = context.createMediaStreamSource(voiceStream);
+          const destination = context.createMediaStreamDestination();
+          const desktopGain = context.createGain();
+          const voiceGain = context.createGain();
 
+          desktopGain.gain.value = 0.7;
+          voiceGain.gain.value = 0.7;
+          // source 1 computer screen hai
+          source1.connect(desktopGain).connect(destination);
+          // Connect source2 voice hai
+          source2.connect(voiceGain).connect(destination);
+          return destination.stream.getAudioTracks();
+        };
+
+        //stream = mergeAudioStreams;
+        //stream = new MediaStream([...mergeAudioStreams.getTracks()]);
+        const tracks = [
+          ...screenStream.getVideoTracks(),
+          ...mergeAudioStreams(screenStream, audioStream)
+        ];
+
+        console.log('Tracks to add to stream 167', tracks);
+        stream = new MediaStream(tracks);
+      } catch (error) {
+        console.error("Error while creating merged audio streams: ", error)
+        stream = new MediaStream([...screenStream.getTracks(), ...audioStream.getTracks()]);
+      }
+
+    } else {
+      stream = new MediaStream([...screenStream.getTracks()]);
+      //stream = new MediaStream([...screenStream.getVideoTracks()]);
+    }
+    onCombineAvailable(stream);
 
  }
 
 
  function onCombineAvailable(stream){
-    console.log("onCombineAvailable");
+    console.log("onCombineAvailable 179");
     localStream = stream;
     videoElement.srcObject = localStream;
     videoElement.play();
