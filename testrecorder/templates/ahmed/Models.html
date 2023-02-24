@@ -1,0 +1,35 @@
+
+    <!-- Test Details Modal -->
+    <div class="modal" id="test-details-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Test Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        id="close-test-details-modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label required">User</label>
+                            <input type="text" class="form-control" id="username">
+                            <p style="color:red;" id="username-error"></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">Test Name</label>
+                            <input type="email" class="form-control" id="test-name">
+                            <p style="color:red;" id="test-name-error"></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">Test Description</label>
+                            <textarea class="form-control" id="test-description"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onClick="validateModal()">Submit</button>
+                    <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
