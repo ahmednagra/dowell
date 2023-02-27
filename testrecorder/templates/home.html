@@ -57,7 +57,7 @@
         <!-- Settings and controls -->
     <div class="main-content-check-boxes">
         <div class="setting-icon">
-            <input type="checkbox" name="webcam" id="webcam-recording" onclick="webcam_status()" checked>
+            <input type="checkbox" name="webcam" id="webcam-recording" onclick="webcam_status()" >
             <label for="webcam-recording"><i class="fas fa-camera"></i><p>Webcam</p></label>
         </div>
         <div class="setting-icon">
@@ -65,7 +65,7 @@
             <label for="screen-recording"><i class="fas fa-desktop"></i><p>Screen</p></label>
         </div>
         <div class="setting-icon">
-            <input type="checkbox" name="audio" id="audio-settings" onclick="micphone_status()" checked>
+            <input type="checkbox" name="audio" id="audio-settings" onclick="micphoneStatus()" checked>
             <label for="audio-settings"><i class="fas fa-microphone-lines"></i><p>Audio</p></label>
         </div>
         <div class="setting-icon">
@@ -75,7 +75,7 @@
 
         <!--  // Embded Code demo -->        
         <div class="setting-icon">
-            <input type="checkbox" name="screenshare" id="screen-share">
+            <button type="checkbox" name="screenshare" id="screen-share"></button>
             <label for="screen-share"><i class="fas fa-globe"></i><p>screen-share</p></label>
         </div>
         
@@ -978,7 +978,7 @@
 
 <!--Muhammad Ahmed -->
 
-<script src="{% static '/js/index2.js' %}"></script>
+<script src="{% static '/js/index3.js' %}"></script>
 
 
 {% endblock body %}
