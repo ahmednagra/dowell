@@ -57,7 +57,7 @@
         <!-- Settings and controls -->
     <div class="main-content-check-boxes">
         <div class="setting-icon">
-            <input type="checkbox" name="webcam" id="webcam-recording" onclick="webcam_status()" checked>
+            <input type="checkbox" name="webcam" id="webcam-recording" onclick="webcam_status()">
             <label for="webcam-recording"><i class="fas fa-camera"></i><p>Webcam</p></label>
         </div>
         <div class="setting-icon">
@@ -978,7 +978,10 @@
 
 <!--Muhammad Ahmed -->
 
-<script src="{% static '/js/index2.js' %}"></script>
+   <script src="{% static '/js/index2.js' %}"></script>    
+
+<!-- <script src="{% static '/js/recording/screenshare.js' %}"></script>  -->
+
 
 
 {% endblock body %}
