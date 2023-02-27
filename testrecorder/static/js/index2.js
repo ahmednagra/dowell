@@ -1,9 +1,12 @@
 
 var sharebtn= document.querySelector("#screen-share");
+var screenReco =document.getElementById("screen_recording")
+var cameraCheckbox = document.getElementById('webcam-recording')
 var recbtn= document.querySelector("#record");
 var stopbtn= document.querySelector("#stop");
 const videoElement = document.getElementById('video');
 var downloadlink = document.querySelector("#downloadlink");
+var error = document.querySelector('#error').innerHTML;
 //var mic = document.querySelector('#audio-settings');
 // for mic constrainits
 /* let screenAudioConstraints = {
@@ -20,28 +23,72 @@ stopbtn.onclick= onBtnStopClick;
 // Custom Variables 
 var mediaRecorder;
 var localStream = null;
-document.getElementById("error").innerHTML="ffff";
+error="Welcome Sharing Portal ";
 
-//define all functions 
- var micbtn = null;
-async function mic_setting(){
-   micbtn= document.getElementById("audio-settings");
-  if (micbtn.checked == true) {
-    return micbtn = true;
+//Options from Users 
+// Voice enable/Disable 
+var microphoen_btn = null;
+async function micphone_status(){
+  microphoen_btn= document.getElementById("audio-settings");
+  if (microphoen_btn.checked == true) {
+    return microphoen_btn = true;
   } else {
-   return micbtn = false;
+   return microphoen_btn = false;
   }
-  console.log("micbtn value" , micbtn);
+  //console.log("microphoen btn value" , microphoen_btn);
+}
+//Webcam Enable/disable
+var webcam_status_btn = null;
+async function webcam_status(){
+  webcam_status_btn= cameraCheckbox;
+  if (webcam_status_btn.checked == true) {
+    return webcam_status_btn = true;
+  } else {
+   return webcam_status_btn = false;
+  }
+  //console.log("microphoen btn value" , microphoen_btn);
+}
+// Computer Screen 
+var computerScreen_btn = null;
+async function computerScreen_status(){
+  computerScreen_btn= screenReco;
+  if (computerScreen_btn == true){
+    return computerScreen_btn = true;
+  } else {
+    return computerScreen_btn=false;
+  }
 }
 
-// Gets computer/capture screen stream recording stream
-async function computerscreen(mediaConstraints = {
-  video: {
-    cursor: 'always',
-    resizeMode: 'crop-and-scale'
-  },
-  //audio: true
-}) {
+
+
+
+// Gets webcam/camera stream
+async function captureMediaDevices(currentMediaConstraints) {
+  if (webcam_status_btn == true){
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(currentMediaConstraints)
+        video.src = null
+        video.srcObject = stream
+        video.muted = true
+        return stream
+      }
+        catch (err) {
+          let msg = "STATUS: Error while getting webcam stream."
+          document.getElementById("error").innerHTML = msg;
+          // Reset app status
+        }
+      }
+}
+// Gets computer/capture screen stream 
+async function computerscreen(){
+  if(computerScreen_btn == true){
+  mediaConstraints = {
+    video: {
+      cursor: 'always',
+      resizeMode: 'crop-and-scale'
+    },
+    //audio: true
+    } 
   try { // phly screen stream ko global null kiya
     const screenStream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints)
     return screenStream
@@ -51,88 +98,153 @@ async function computerscreen(mediaConstraints = {
     document.getElementById("error").innerHTML = msg;
   }
 }
+}
+ 
 
 
-// Share Screen Function 
- async function shareScreen() {
-    console.log("shareS creen");
-    document.getElementById("error").innerHTML="";
-   /* var screenConstraints = {
-        video:true,
-        //audio:true,
-    }  // knsa media diplay krna hia 
-    var micstream= navigator.mediaDevices.getDisplayMedia(screenConstraints).then(function(screenStream){
-        // mic ko enablekiya hai
-        var micConstraints = {
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            sampleRate: 44100
-          },
-        };
-        // mic ko share kiya .then k baad promises use kiya hai
-        navigator.mediaDevices.getUserMedia(micConstraints).then(function(micStream){
-            // ab is k sath vido screen share ko attach kiya hai 
-            var composedSrtream = new MediaStream();
-            //add screen aur phir screen video mein convert ho gi
-            screenStream.getVideoTracks().forEach(function(videoTrack){
-                composedSrtream.addTrack(videoTrack);
-            })
+// Records webcam and audio
+async function recordStream() {
+  webCamStream = await captureMediaDevices(webcamMediaConstraints);
+ console.log("Computer Webcamer", webCamStream);
 
-            //Create New Audio
-            recordAudio = mic.unchecked;
-            //stream = null;
-            if (recordAudio == true) {
-                var context= new AudioContext();
-                var audioDestinationNode= context.createMediaStreamDestination();
+  video.src = null
+  video.srcObject = webCamStream
+  video.muted = true
 
-              // at lenght 0 mean no voice
-              if (screenStream && screenStream.getAudioTracks().length>0){
-                      const systemSource = context.createMediaStreamSource(screenStream);
-                      const systemGain = context.createGain(); // sytem audio ko intract krta hai createGain
-                          systemGain.gain.value = 1;
-                          //audio ko connect kiya video k sath aur jo audio thi usko mice se jo voice aa rahi hai us se 
-                          systemSource.connect(systemGain).connect(audioDestinationNode)
-              }
-              if(micStream && micStream.getAudioTracks().length > 0 ){
-                  const micSource = context.createMediaStreamSource(micStream);
-                  const micGain= context.createGain();
-                  micGain.gain.value = 1;
-                  micSource.connect(micGain).connect(audioDestinationNode);
-              }
+  webcamRecorder = new MediaRecorder(webCamStream, options);
 
-              audioDestinationNode.stream.getAudioTracks().forEach(function(audioTrack){
-                  composedSrtream.addTrack(audioTrack);
-                   
-              })
+  webcamRecorder.ondataavailable = event => {
+    if (recordinginProgress == true) {
+      if ((event.data.size > 0) && (recordingSynched == true) && (streamWebcamToYT == true)) {
+        appWebsocket.send(event.data);
+        console.log("webcamRecorder screen data to webcam websocket120", webcamRecorder);
+      } else if ((event.data.size > 0) && (recordingSynched == true) && (streamScreenToYT == false)) {
+        console.log("webcamRecorder screen data to webcam websocket122", webcamRecorder);
+        let recordWebcam = webcam_status_btn;
+        let recordScreen = computerScreen_btn;
+        if ((recordScreen == true) && (recordWebcam == true)) {
+          webcamWebSocket.send(event.data);
 
-              onCombineAvailable(composedSrtream);
-              console.log("onCombineAvailable 79 voice" , onCombineAvailable) 
-            } else{
-              composedSrtream
-                    onCombineAvailable(composedSrtream);   
-                    console.log("onCombineAvailable 82 no voice" , onCombineAvailable)   
-            }  
-           
+        }
+      }
+    }
+  }
 
-            // error mic ka 
-        }).catch(function(error){
-            console.error(error);
-        document.getElementById("error").innerHTML="Attach Microphone";
-        })
+  webcamRecorder.onstop = () => {
+    // Show that webcam recording has stopped
+    msg = "STATUS: Webcam Recording stopped."
+    document.getElementById("error").innerHTML = msg;
+  }
 
-        // is k sath he hum error ko catch kr k console pe print krwA LAY GAY
-    }).catch(function(error){
-        console.log(error);
-    document.getElementById("error").innerHTML="Must Share Screen";
+  //webcamRecorder.start(200)
+}
+
+// Records merged Computer screen and webcam stream
+async function recordMergedStream() {
+  try {
+    var merger = new VideoStreamMerger();
+
+    // Set width and height of merger
+    let screenWidth = screen.width;
+    let screenHeight = screen.height;
+    merger.setOutputSize(screenWidth, screenHeight);
+
+    // Check if we need to add audio stream
+    //voice = await micphone_status();
+    //let recordAudio = voice;
+//    let muteState = !recordAudio;
+    //console.log("muteState 102: ",recordAudio)
+    //if (recordAudio == true){
+    // Add the screen capture. Position it to fill the whole stream (the default)
+    merger.addStream(screenStream, {
+      x: 0, // position of the topleft corner
+      y: 0,
+      width: merger.width,
+      height: merger.height,
+      //mute: true // we don't want sound from the screen (if there is any)
+      //mute: false // we want sound from the screen (if there is any)
+      //mute: muteState // user preference on sound from the screen (if there is any)
     })
- */ 
-    voice = await mic_setting();
+
+    // Calculate dynamic webcam stream height and width
+    let webcamStreamWidth = Math.floor(0.15 * screenWidth);
+    //console.log("webcamStreamWidth: " + webcamStreamWidth);
+    let webcamStreamHeight = Math.floor((webcamStreamWidth * screenHeight) / screenWidth);
+    //console.log("webcamStreamHeight: " + webcamStreamHeight);
+
+    // Add the webcam stream. Position it on the bottom left and resize it to 0.15 of screen width.
+    merger.addStream(webCamStream, {
+      x: 0,
+      y: merger.height - webcamStreamHeight,
+      width: webcamStreamWidth,
+      height: webcamStreamHeight,
+      //mute: false
+    })
+
+    // Start the merging. Calling this makes the result available to us
+    merger.start()
+
+    // We now have a merged MediaStream!
+    const mergedStream = merger.result
+    mergedStreamRecorder = new MediaRecorder(mergedStream, options);
+
+    mergedStreamRecorder.ondataavailable = event => {
+      if (recordinginProgress == true) {
+        if ((event.data.size > 0) && (recordingSynched == true) && (streamMergedToYT == true)) {
+          //mergedStreamChunks.push(event.data);
+          appWebsocket.send(event.data);
+        }
+      }
+    }
+
+    webcamRecorder.onstop = () => {
+
+      // @ Muhammad Ahmed for local path downloaf testing 
+      const blob = new Blob(chunks, {
+        type: 'video/webm;codecs=vp9'
+      })
+      chunks = []
+      const blobUrl = URL.createObjectURL(blob)
+      console.log(" web and voice stream link ", blobUrl)
+      
+    // old code below
+
+      // Show that webcam recording has stopped
+      msg = "STATUS: Merged Stream Recording stopped."
+      document.getElementById("Error").innerHTML = msg;
+    }
+
+    //mergedStreamRecorder.start(200);
+  }
+  catch (err) {
+    let msg = "STATUS: Error while recording merged stream stream."
+    document.getElementById("app-status").innerHTML = msg;
+    alert("Error while recording merged stream stream.");
+    console.log("Error while recording merged stream stream: " + err.message);
+
+    // Reset app status
+    //resetStateOnError();
+  }
+}
+
+
+
+// web + computer screen + voice stream 
+
+// Share Computer Screen and Audio stream 
+ async function shareScreen() {
+    console.log("share Screen");
+    document.getElementById("error").innerHTML="";
+    voice = await micphone_status();
     screenStream = await computerscreen();
+    webcamer = await webcam_status();
+    computscreen = await computerScreen_status();
     // Check if we need to add audio stream
     let recordAudio = voice;
+    let cam = webcamer;
+    let compscreen = computscreen;
     let stream = null;
-    if (recordAudio == true) {
+    if (recordAudio == true && cam == true && compscreen == true ) {
       audioStream = await captureMediaDevices(screenAudioConstraints);
       //stream = new MediaStream([...screenStream.getTracks(), ...audioStream.getTracks()]);
       try {
@@ -168,7 +280,43 @@ async function computerscreen(mediaConstraints = {
         stream = new MediaStream([...screenStream.getTracks(), ...audioStream.getTracks()]);
       }
 
-    } else {
+    }  else if(recordAudio == true && screenStream == true){
+      audioStream = await captureMediaDevices(screenAudioConstraints);
+      //stream = new MediaStream([...screenStream.getTracks(), ...audioStream.getTracks()]);
+      try {
+        const mergeAudioStreams = (desktopStream, voiceStream) => {
+          const context = new AudioContext();
+          // Create a couple of sources
+          const source1 = context.createMediaStreamSource(desktopStream);
+          const source2 = context.createMediaStreamSource(voiceStream);
+          const destination = context.createMediaStreamDestination();
+          const desktopGain = context.createGain();
+          const voiceGain = context.createGain();
+
+          desktopGain.gain.value = 0.7;
+          voiceGain.gain.value = 0.7;
+          // source 1 computer screen hai
+          source1.connect(desktopGain).connect(destination);
+          // Connect source2 voice hai
+          source2.connect(voiceGain).connect(destination);
+          return destination.stream.getAudioTracks();
+        };
+
+        //stream = mergeAudioStreams;
+        //stream = new MediaStream([...mergeAudioStreams.getTracks()]);
+        const tracks = [
+          ...screenStream.getVideoTracks(),
+          ...mergeAudioStreams(screenStream, audioStream)
+        ];
+
+        console.log('Tracks to add to stream 167', tracks);
+        stream = new MediaStream(tracks);
+      } catch (error) {
+        console.error("Error while creating merged audio streams: ", error)
+        stream = new MediaStream([...screenStream.getTracks(), ...audioStream.getTracks()]);
+      }
+    }
+    else {
       stream = new MediaStream([...screenStream.getTracks()]);
       //stream = new MediaStream([...screenStream.getVideoTracks()]);
     }
@@ -235,6 +383,7 @@ function onBtnrecordClick() {
     downloadlink.style.color = "#fff";
     console.log("After download link");
  }
+
 
 
 /*

@@ -57,15 +57,15 @@
         <!-- Settings and controls -->
     <div class="main-content-check-boxes">
         <div class="setting-icon">
-            <input type="checkbox" name="webcam" id="webcam-recording">
+            <input type="checkbox" name="webcam" id="webcam-recording" onclick="webcam_status()" checked>
             <label for="webcam-recording"><i class="fas fa-camera"></i><p>Webcam</p></label>
         </div>
         <div class="setting-icon">
-            <input type="checkbox" name="screen" id="screen-recording" checked>
+            <input type="checkbox" name="screen" id="screen-recording"  onclick="screen_recording()" checked>
             <label for="screen-recording"><i class="fas fa-desktop"></i><p>Screen</p></label>
         </div>
         <div class="setting-icon">
-            <input type="checkbox" name="audio" id="audio-settings" onclick="mic_setting()" checked>
+            <input type="checkbox" name="audio" id="audio-settings" onclick="micphone_status()" checked>
             <label for="audio-settings"><i class="fas fa-microphone-lines"></i><p>Audio</p></label>
         </div>
         <div class="setting-icon">
