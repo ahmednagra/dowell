@@ -116,7 +116,7 @@ let getTaskIdFromUserModal = new bootstrap.Modal(document.getElementById('getTas
 // Fill user email settings if it exists
 document.getElementById("userClickupEmail").value = localStorage.getItem("userClickupEmail");
 
-// Gets webcam stream
+// Gets Computer webcam stream
 async function captureMediaDevices(currentMediaConstraints) {
   try {
     const stream = await navigator.mediaDevices.getUserMedia(currentMediaConstraints)
@@ -311,7 +311,6 @@ async function recordMergedStream() {
   }
 }
 
-
 // Stops webcam and screen recording
 async function stopRecording() {
 
@@ -392,7 +391,7 @@ async function stopRecording() {
   sendAvailableData(globalProgress);
 }
 
-// Records screen and audio
+// Records screen and audio stream
 async function recordScreenAndAudio() {
   screenStream = await captureScreen();
 
