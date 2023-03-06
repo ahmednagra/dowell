@@ -161,19 +161,17 @@ async function captureScreen(mediaConstraints = {
 
 //@Muhammad Ahmed 
 // VOice mute/Unmute
-
-var microphoen_btn = null;
-async function micphone_status(){
+async function micphoneStatus(){
+  var microphoen_btn = null;
   microphoen_btn= document.getElementById("audio-settings");
   if (microphoen_btn.checked == true) {
     return microphoen_btn = true;
   } else {
    return microphoen_btn = false;
   }
-  //console.log("microphoen btn value" , microphoen_btn);
+  console.log("microphoen btn value 172" , microphoen_btn);
 }
 
-//@Muhammad Ahmed 
 // Records webcam and audio
 async function recordStream() {
   webCamStream = await captureMediaDevices(webcamMediaConstraints);
@@ -226,7 +224,7 @@ async function recordMergedStream() {
     merger.setOutputSize(screenWidth, screenHeight);
 
     // Check if we need to add audio stream
-    voice = await micphone_status();
+    voice = await micphoneStatus();
     let recordAudio = voice;
     let muteState = !recordAudio;
 
@@ -282,16 +280,6 @@ async function recordMergedStream() {
     }
 
     webcamRecorder.onstop = () => {
-
-      // @ Muhammad Ahmed for local path downloaf testing 
-      const blob = new Blob(chunks, {
-        type: 'video/webm;codecs=vp9'
-      })
-      chunks = []
-      const blobUrl = URL.createObjectURL(blob)
-      console.log(" web and voice stream link ", blobUrl)
-      
-// old code below
 
       // Show that webcam recording has stopped
       msg = "STATUS: Merged Stream Recording stopped."
@@ -396,7 +384,7 @@ async function recordScreenAndAudio() {
   screenStream = await captureScreen();
 
   // Check if we need to add audio stream
-  voice = await micphone_status();
+  voice = await micphoneStatus();
   let recordAudio = voice;
   let stream = null;
   if (recordAudio == true) {
@@ -479,15 +467,7 @@ async function recordScreenAndAudio() {
   }
 
   screenRecorder.onstop = () => {
-    //@ Muhammad Ahmed for downlaod 
-    const blob = new Blob(chunks, {
-      type: 'video/webm;codecs=vp9'
-    })
-    chunks = []
-    const blobUrl = URL.createObjectURL(blob)
-    console.log("screen and recording stream" , blobUrl)
- 
-    //old code start below 
+   
     // Show that screen recording has stopped
     msg = "STATUS: Screen Recording Stopped."
     document.getElementById("app-status").innerHTML = msg;
@@ -515,7 +495,7 @@ async function startRecording() {
 
   // Enable or disable audio recording
   try {
-    voice = await micphone_status();
+    voice = await micphoneStatus();
     // Check if we need to add audio stream
     let recordAudio = voice;
     if (recordAudio == true) {
