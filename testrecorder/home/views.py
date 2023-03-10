@@ -12,6 +12,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from youtube.forms import AddChannelRecord
 
+from youtube.models import ChannelsRecord
+
 
 
 
@@ -45,8 +47,14 @@ class HomePageView(TemplateView):
     def get(self, request, *args, **kwargs):
         """Handles get requests to '/'"""
         # create he form object to render
+        # form = AddChannelRecord()
+        # return render(request, self.template_name, {'form': form})
+    
+    #nEw Code
+        channelrecord= ChannelsRecord.objects.all()
         form = AddChannelRecord()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'channelrecord':channelrecord})
+    
     
     def post(self, request, *args, **kwargs):
         """Handles POST requests to '/'"""
